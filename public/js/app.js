@@ -8005,16 +8005,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      task: {}
+      task: {
+        title: '',
+        contetn: '',
+        preson_in_charge: ''
+      }
     };
   },
   methods: {
-    submit: function submit() {
+    // submit() {
+    //     axios.post('/api/tasks', this.task)
+    //         .then((res) => {
+    //             this.$router.push({name: 'task.list'});
+    //         });
+    // }
+    toConfirm: function toConfirm() {
       var _this = this;
-      axios.post('/api/tasks', this.task).then(function (res) {
+      axios.post('/api/tasks/confirm', this.task).then(function () {
         _this.$router.push({
-          name: 'task.list'
+          name: 'task.confirm'
         });
+      }).chatch(function (error) {
+        console.error(error);
+        alert('エラー');
       });
     }
   }
@@ -8249,7 +8262,7 @@ var render = function render() {
     on: {
       submit: function submit($event) {
         $event.preventDefault();
-        return _vm.submit.apply(null, arguments);
+        return _vm.toConfirm.apply(null, arguments);
       }
     }
   }, [_c("div", {
@@ -30858,6 +30871,7 @@ __webpack_require__.r(__webpack_exports__);
 
 window.axios = axios__WEBPACK_IMPORTED_MODULE_1__["default"];
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios__WEBPACK_IMPORTED_MODULE_1__["default"].defaults.withCredentials = true;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

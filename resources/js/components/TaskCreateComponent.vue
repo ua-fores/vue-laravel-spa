@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-sm-6">
                 <!-- <form> -->
-                <form v-on:submit.prevent="submit">
+                <form v-on:submit.prevent="toConfirm">
                     <div class="form-group row">
                         <label for="title" class="col-sm-3 col-form-label">Title</label>
                         <!-- <input type="text" class="col-sm-9 form-control" id="title"> -->
@@ -30,15 +30,29 @@
     export default {
         data: function(){
             return {
-                task:{}
+                task:{
+                    title: '',
+                    contetn: '',
+                    preson_in_charge: ''
+                }
             }
         },
         methods: {
-            submit() {
-                axios.post('/api/tasks', this.task)
-                    .then((res) => {
-                        this.$router.push({name: 'task.list'});
-                    });
+            // submit() {
+            //     axios.post('/api/tasks', this.task)
+            //         .then((res) => {
+            //             this.$router.push({name: 'task.list'});
+            //         });
+            // }
+            toConfirm() {
+                axios.post('/api/tasks/confirm', this.task)
+                    .then(() => {
+                        this.$router.push({ name: 'task.confirm'});
+                    })
+                    .chatch((error) => {
+                        console.error(error);
+                        alert('エラー');
+                    })
             }
         }
     }
