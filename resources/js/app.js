@@ -12,6 +12,8 @@ import TaskListComponent from "./components/TaskListComponent";
 import TaskShowComponent from "./components/TaskShowComponent";
 import TaskCreateComponent from "./components/TaskCreateComponent";
 import TaskEditComponent from "./components/TaskEditComponent";
+import TaskCreateConfirmComponent from "./components/TaskCreateConfirmComponent";
+import TaskEditConfirmComponent from "./components/TaskEditConfirmComponent";
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -37,6 +39,11 @@ const router = new VueRouter({
             component: TaskCreateComponent
         },
         {
+            path: '/tasks/confirm',
+            name: 'task.confirm',
+            component: TaskCreateConfirmComponent,
+        },
+        {
             path: '/tasks/:taskId',
             name: 'task.show',
             component: TaskShowComponent,
@@ -46,6 +53,12 @@ const router = new VueRouter({
             path: '/tasks/:taskId/edit',
             name: 'task.edit',
             component: TaskEditComponent,
+            props: true
+        },
+        {
+            path: '/tasks/:taskId/editConfirm',
+            name: 'task.editConfirm',
+            component: TaskEditConfirmComponent,
             props: true
         },
     ]

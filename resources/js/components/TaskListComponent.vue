@@ -84,13 +84,16 @@
                     </router-link>
                 </td>
                 <td>
-                    <router-link v-bind:to="{name: 'task.edit', params: {taskId: `${task.id}`}}">
-                        <button class="btn btn-primary">Edit</button>
-                    </router-link>
+                    <!-- セッションクリアメソッドが呼ばれないので廃止 -->
+                    <!-- <router-link v-bind:to="{name: 'task.edit', params: {taskId: `${task.id}`}}"
+                                v-on:click.native.prevent="goToEdit(task.id)"
+                    > -->
+                        <button v-on:click="goToEdit(`${task.id}`)" class="btn btn-primary">Edit</button>
+                    <!-- </router-link> -->
                 </td>
                 <td>
                     <!-- <button class="btn btn-danger">Delete</button> -->
-                    <button class="btn btn-danger" v-on:click="deleteTask(task.id)">Delete</button>
+                    <button class="btn btn-danger" v-on:click="deleteTask(`${task.id}`)">Delete</button>
                 </td>
             </tr>
             </tbody>
@@ -117,7 +120,17 @@
                     .then((res) => {
                         this.getTasks();
                     });
-            }
+            },
+            goToEdit(id){
+                axios.post('/draft/edit/clear')
+                    .finally(() => {
+                        this.$router.push({
+                            name: 'task.edit',
+                            params: { taskId: `${id}`}
+                        });
+                    });
+            },
+
         },
         mounted() {
             this.getTasks();

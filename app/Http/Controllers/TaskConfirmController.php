@@ -6,33 +6,59 @@ use Illuminate\Http\Request;
 
 class TaskConfirmController extends Controller
 {
-    // セッションへ保存する
-    public function store(Request $request)
+  //セッションに保存
+    public function storeCreate(Request $request)
     {
-        $data = $request->only(['title', 'content', 'person_in_charge']);
+        $data = [
+            'title'=>$request->input('title', ''),
+            'content'=>$request->input('content', ''),
+            'person_in_charge'=>$request->input('person_in_charge', ''),
+        ];
+        $request->session()->put('draft_create', $data);
+        return response()->json(['ok' => true]);
+    }
 
-        session()->put('task.confirm', $data);
-        
-
+  //セッションから取得
+    public function showCreate(Request $request)
+    {
         return response()->json([
-            'status' => 'ok',
-            'data' => $data,
-        ], 200);
+            'draft'=>$request->session()->get('draft_create', null),
+        ]);
     }
 
-    public function show()
+  //セッションクリア
+    public function clearCreate(Request $request)
     {
-        $data = session()->get('task.confirm');
-                if ($data) {
-            return response()->json([
-                'status' => 'ok',
-                'data'   => $data,
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'empty',
-                'data'   => $data, 
-            ], 200);
-        }
+        $request->session()->forget('draft_create');
+        return response()->json(['ok' => true]);
     }
-}
+
+    
+    //セッションに保存
+      public function storeEdit(Request $request)
+      {
+          $data = [
+              'id'=>$request->input('id', ''),
+              'title'=>$request->input('title', ''),
+              'content'=>$request->input('content', ''),
+              'person_in_charge'=>$request->input('person_in_charge', ''),
+          ];
+          $request->session()->put('draft_edit', $data);
+          return response()->json(['ok' => true]);
+      }
+  
+    //セッションから取得
+      public function showEdit(Request $request)
+      {
+          return response()->json([
+              'draft'=>$request->session()->get('draft_edit', null),
+          ]);
+      }
+  
+    //セッションクリア
+      public function clearEdit(Request $request)
+      {
+          $request->session()->forget('draft_edit');
+          return response()->json(['ok' => true]);
+      }
+  }

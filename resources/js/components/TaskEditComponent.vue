@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-sm-6">
                 <!-- <form> -->
-                <form v-on:submit.prevent="submit">
+                <form v-on:submit.prevent="toConfirm">
                     <div class="form-group row">
                         <label for="id" class="col-sm-3 col-form-label">ID</label>
                         <!-- <input type="text" class="col-sm-9 form-control-plaintext" readonly id="id" v-bind:value="taskId"> -->
@@ -32,31 +32,79 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { error } from 'laravel-mix/src/Log';
+// import { error } from 'laravel-mix/src/Log';
+
     export default {
         props: {
             taskId: String
         },
         data: function () {
             return {
-                task: {}
+                task: {
+                    id: '',
+                    title: '',
+                    content: '',
+                    person_in_charge: ''
+                }
             }
         },
         methods: {
-            getTask() {
-                axios.get('/api/tasks/' + this.taskId)
+            loadTask(){
+                axios.get('/draft/edit')
                     .then((res) => {
-                        this.task = res.data;
+                        if (res.data && res.data.draft){
+                            const draft = res.data.draft;
+                            this.task = {
+                                id: draft.id || this.taskId,
+                                title: draft.title || '',
+                                content: draft.content || '',
+                                person_in_charge: draft.person_in_charge || '',
+                            };
+                        } else {
+                            return axios.get('/api/tasks/' + this.taskId)
+                                .then((res2) => {
+                                    this.task = res2.data;
+                                });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert('タスクの取得に失敗しました。');
+                        this.$router.push({ name: 'task.list'});
                     });
             },
-            submit() {
-                axios.put('/api/tasks/' + this.taskId, this.task)
-                    .then((res) => {
-                        this.$router.push({name: 'task.list'})
+            // getTask() {
+            //     axios.get('/api/tasks/' + this.taskId)
+            //         .then((res) => {
+            //             this.task = res.data;
+            //         });
+            // },
+            // submit() {
+            //     axios.put('/api/tasks/' + this.taskId, this.task)
+            //         .then((res) => {
+            //             this.$router.push({name: 'task.list'})
+            //         });
+            // }
+            toConfirm() {
+                axios.post('/draft/edit', this.task)
+                    .then(()=> {
+                        this.$router.push({
+                            name: 'task.editConfirm',
+                            params: { taskId: this.task.id}
+                        });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert('下書き保存に失敗しました。');
                     });
             }
         },
         mounted() {
-            this.getTask();
+            // this.getTask();
+            // 確認画面から戻った場合にキャッシュから入力値を取得する
+            this.loadTask();
         }
     }
 </script>

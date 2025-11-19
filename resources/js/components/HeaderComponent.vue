@@ -7,9 +7,12 @@
                     <router-link v-bind:to="{name: 'task.list'}">
                          <button class="btn btn-success">List</button>
                     </router-link>
-                    <router-link v-bind:to="{name: 'task.create'}">
-                        <button class="btn btn-success">ADD</button>
-                    </router-link>
+                    <!-- ナビゲーション重複してしまうので廃止 -->
+                    <!-- <router-link v-bind:to="{name: 'task.create'}"
+                                v-on:click.native.prevent="goToTaskCreate"            
+                    > -->
+                    <button class="btn btn-success" v-on:click="goToTaskCreate">ADD</button>
+                    <!-- </router-link> -->
                 </div>
             </nav>
         </div>
@@ -17,5 +20,20 @@
 </template>
 
 <script>
-    export default {}
+import axios from 'axios';
+
+    export default {
+        methods:{
+            goToTaskCreate(){
+                axios.post('/draft/create/clear')
+                    .finally(() => {
+                        this.$router.push({
+                            name: 'task.create'
+                        });
+                    });
+            },
+        }
+
+    }
+    
 </script>
