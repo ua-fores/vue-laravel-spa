@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use PhpParser\Node\Expr\FuncCall;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TaskController extends Controller
 {
@@ -20,13 +22,13 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+
         return Task::create($request->all());
     }
-
+    
     public function update(Request $request, Task $task)
     {
         $task->update($request->all());
-
         return $task;
     }
 
@@ -36,4 +38,5 @@ class TaskController extends Controller
 
         return $task;
     }
+
 }

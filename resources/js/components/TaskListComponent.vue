@@ -13,66 +13,6 @@
             </tr>
             </thead>
             <tbody>
-            <!-- ビューを見るためにデータをベタ書きする -->
-            <!-- <tr>
-                <th scope="row">1</th>
-                <td>Title1</td>
-                <td>Content1</td>
-                <td>Ichiro</td>
-                <td>
-                    <router-link v-bind:to="{name: 'task.show', params: {taskId: '1'}}">
-                        <button class="btn btn-primary">Show</button>
-                    </router-link>
-                </td>
-                <td>
-                    <router-link v-bind:to="{name: 'task.edit',params: {taskId: '1'}}">
-                        <button class="btn btn-success">Edit</button>
-                    </router-link>
-            </td>
-            <td>
-                    <button class="btn btn-danger">Delete</button>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Title2</td>
-            <td>Content2</td>
-            <td>Jiro</td>
-            <td>
-                    <router-link v-bind:to="{name: 'task.show', params: {taskId: '2'}}">
-                        <button class="btn btn-primary">Show</button>
-                    </router-link>
-                </td>
-                <td>
-                    <router-link v-bind:to="{name: 'task.edit',params: {taskId: '2'}}">
-                        <button class="btn btn-success">Edit</button>
-                    </router-link>
-                </td>
-                <td>
-                    <button class="btn btn-danger">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Title3</td>
-                <td>Content3</td>
-                <td>Saburo</td>
-                <td>
-                    <router-link v-bind:to="{name: 'task.show', params: {taskId: '3'}}">
-                        <button class="btn btn-primary">Show</button>
-                    </router-link>
-                </td>
-                <td>
-                    <router-link v-bind:to="{name: 'task.edit',params: {taskId: '3'}}">
-                        <button class="btn btn-success">Edit</button>
-                    </router-link>
-                </td>
-                <td>
-                     <button class="btn btn-danger">Delete</button>
-                </td>
-            </tr> -->
-
-            <!-- データベースを利用する -->
             <tr v-for="(task, index) in tasks" :key="index">
                 <th scope="row">{{ task.id }}</th>
                 <td>{{ task.title }}</td>
@@ -84,15 +24,9 @@
                     </router-link>
                 </td>
                 <td>
-                    <!-- セッションクリアメソッドが呼ばれないので廃止 -->
-                    <!-- <router-link v-bind:to="{name: 'task.edit', params: {taskId: `${task.id}`}}"
-                                v-on:click.native.prevent="goToEdit(task.id)"
-                    > -->
                         <button v-on:click="goToEdit(`${task.id}`)" class="btn btn-primary">Edit</button>
-                    <!-- </router-link> -->
                 </td>
                 <td>
-                    <!-- <button class="btn btn-danger">Delete</button> -->
                     <button class="btn btn-danger" v-on:click="deleteTask(`${task.id}`)">Delete</button>
                 </td>
             </tr>

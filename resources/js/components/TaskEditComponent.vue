@@ -13,16 +13,20 @@
                         <label for="title" class="col-sm-3 col-form-label">Title</label>
                         <!-- <input type="text" class="col-sm-9 form-control" id="title"> -->
                         <input type="text" class="col-sm-9 form-control" id="title" v-model="task.title">
+                        <div v-if="errors.title" class="error text-danger"> {{ errors.title[0] }}</div>
                     </div>
                     <div class="form-group row">
                         <label for="content" class="col-sm-3 col-form-label">Content</label>
                         <!-- <input type="text" class="col-sm-9 form-control" id="content"> -->
                         <input type="text" class="col-sm-9 form-control" id="content" v-model="task.content">
+                        <div v-if="errors.content" class="error text-danger"> {{ errors.content[0] }}</div>
+                        
                     </div>
                     <div class="form-group row">
                         <label for="person-in-charge" class="col-sm-3 col-form-label">Person In Charge</label>
                         <!-- <input type="text" class="col-sm-9 form-control" id="person-in-charge"> -->
                         <input type="text" class="col-sm-9 form-control" id="person-in-charge" v-model="task.person_in_charge">
+                        <div v-if="errors.person_in_charge" class="error text-danger"> {{ errors.person_in_charge[0] }}</div>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -47,8 +51,9 @@ import { error } from 'laravel-mix/src/Log';
                     title: '',
                     content: '',
                     person_in_charge: ''
-                }
-            }
+                },
+                errors: {},
+            };
         },
         methods: {
             loadTask(){
@@ -90,14 +95,20 @@ import { error } from 'laravel-mix/src/Log';
             toConfirm() {
                 axios.post('/draft/edit', this.task)
                     .then(()=> {
+                        this.errors = {}; //エラークリア
                         this.$router.push({
                             name: 'task.editConfirm',
                             params: { taskId: this.task.id}
                         });
                     })
                     .catch((error) => {
-                        console.error(error);
-                        alert('下書き保存に失敗しました。');
+                        if (error.response && error.response.status === 422) {
+                            //バリデーションエラーの場合dataにセットする
+                            this.errors = error.response.data.errors;
+                        } else {
+                            console.error(error);
+                            alert('下書き保存に失敗しました。');
+                        }
                     });
             }
         },

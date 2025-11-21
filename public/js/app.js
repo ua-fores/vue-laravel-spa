@@ -8199,7 +8199,8 @@ __webpack_require__.r(__webpack_exports__);
         title: '',
         content: '',
         person_in_charge: ''
-      }
+      },
+      errors: {}
     };
   },
   created: function created() {
@@ -8233,12 +8234,20 @@ __webpack_require__.r(__webpack_exports__);
     toConfirm: function toConfirm() {
       var _this2 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/draft/create', this.task).then(function () {
+        _this2.errors = {};
         _this2.$router.push({
           name: 'task.confirm'
         });
       })["catch"](function (error) {
-        console.error(error);
-        alert('エラー：新規登録に失敗しました。');
+        // console.error(error);
+        // alert('エラー：新規登録に失敗しました。');
+        if (error.response && error.response.status === 422) {
+          //バリデーションエラーの場合dataに格納する
+          _this2.errors = error.response.data.errors;
+        } else {
+          //その他のエラー処理
+          console.error(error);
+        }
       });
     }
   }
@@ -8357,7 +8366,8 @@ __webpack_require__.r(__webpack_exports__);
         title: '',
         content: '',
         person_in_charge: ''
-      }
+      },
+      errors: {}
     };
   },
   methods: {
@@ -8400,6 +8410,7 @@ __webpack_require__.r(__webpack_exports__);
     toConfirm: function toConfirm() {
       var _this2 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/draft/edit', this.task).then(function () {
+        _this2.errors = {}; //エラークリア
         _this2.$router.push({
           name: 'task.editConfirm',
           params: {
@@ -8407,8 +8418,13 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       })["catch"](function (error) {
-        console.error(error);
-        alert('下書き保存に失敗しました。');
+        if (error.response && error.response.status === 422) {
+          //バリデーションエラーの場合dataにセットする
+          _this2.errors = error.response.data.errors;
+        } else {
+          console.error(error);
+          alert('下書き保存に失敗しました。');
+        }
       });
     }
   },
@@ -8459,7 +8475,8 @@ __webpack_require__.r(__webpack_exports__);
         if (res.data && res.data.draft) {
           var draft = res.data.draft;
           _this.task = {
-            id: draft.id || _this.taskId,
+            // id: draft.id || `${this.task.id}`,
+            id: "".concat(_this.taskId),
             title: draft.title || '',
             content: draft.content || '',
             person_in_charge: draft.person_in_charge || ''
@@ -8476,7 +8493,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.$router.push({
           name: 'task.edit',
           params: {
-            taskId: _this.taskId
+            taskId: "".concat(_this.task.id)
           }
         });
       });
@@ -8486,7 +8503,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$router.push({
         name: 'task.edit',
         params: {
-          taskId: this.taskId
+          taskId: "".concat(this.task.id)
         }
       });
     },
@@ -8747,7 +8764,9 @@ var render = function render() {
         _vm.$set(_vm.task, "title", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm.errors.title ? _c("div", {
+    staticClass: "error text-danger"
+  }, [_vm._v(" " + _vm._s(_vm.errors.title[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("label", {
     staticClass: "col-sm-3 col-form-label",
@@ -8775,7 +8794,9 @@ var render = function render() {
         _vm.$set(_vm.task, "content", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm.errors.content ? _c("div", {
+    staticClass: "error text-danger"
+  }, [_vm._v(" " + _vm._s(_vm.errors.content[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("label", {
     staticClass: "col-sm-3 col-form-label",
@@ -8803,12 +8824,14 @@ var render = function render() {
         _vm.$set(_vm.task, "person_in_charge", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("button", {
+  }), _vm._v(" "), _vm.errors.person_in_charge ? _c("div", {
+    staticClass: "error text-danger"
+  }, [_vm._v(" " + _vm._s(_vm.errors.person_in_charge[0]))]) : _vm._e()]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("確認画面へ")])])])])]);
+  }, [_vm._v("submit")])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -8973,7 +8996,9 @@ var render = function render() {
         _vm.$set(_vm.task, "title", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm.errors.title ? _c("div", {
+    staticClass: "error text-danger"
+  }, [_vm._v(" " + _vm._s(_vm.errors.title[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("label", {
     staticClass: "col-sm-3 col-form-label",
@@ -9001,7 +9026,9 @@ var render = function render() {
         _vm.$set(_vm.task, "content", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm.errors.content ? _c("div", {
+    staticClass: "error text-danger"
+  }, [_vm._v(" " + _vm._s(_vm.errors.content[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
   }, [_c("label", {
     staticClass: "col-sm-3 col-form-label",
@@ -9029,7 +9056,9 @@ var render = function render() {
         _vm.$set(_vm.task, "person_in_charge", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("button", {
+  }), _vm._v(" "), _vm.errors.person_in_charge ? _c("div", {
+    staticClass: "error text-danger"
+  }, [_vm._v(" " + _vm._s(_vm.errors.person_in_charge[0]))]) : _vm._e()]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
       type: "submit"
@@ -9096,12 +9125,12 @@ var render = function render() {
     on: {
       click: _vm.backToEdit
     }
-  }, [_vm._v("\n                        戻る\n                    ")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n                        back\n                    ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("\n                        この内容で更新\n                    ")])])])])])]);
+  }, [_vm._v("\n                        submit\n                    ")])])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;

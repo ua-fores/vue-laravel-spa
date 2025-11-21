@@ -22,10 +22,10 @@
 
                     <div class="mt-3 d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary" @click="backToEdit">
-                            戻る
+                            back
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            この内容で更新
+                            submit
                         </button>
                     </div>
                 </form>
@@ -62,7 +62,8 @@ export default {
                     if (res.data && res.data.draft) {
                         const draft = res.data.draft;
                         this.task = {
-                            id: draft.id || `${this.task.id}`,
+                            // id: draft.id || `${this.task.id}`,
+                            id: `${this.taskId}`,
                             title: draft.title || '',
                             content: draft.content || '',
                             person_in_charge: draft.person_in_charge || '',
